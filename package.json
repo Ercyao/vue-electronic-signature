@@ -1,6 +1,6 @@
 {
   "name": "vue-ele-sign",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "电子签名",
   "main": "dist/sign.common.js",
   "keywords": [

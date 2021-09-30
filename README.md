@@ -6,15 +6,15 @@
 
 ### 安装依赖命令
 ```
- npm i vue-electronic-signature --save-dev
+ npm i vue-ele-sign --save-dev
 ```
 
 ### 使用例子
 ```
-<vue-electronic-signature ref="VueElectronicSignature" :color="color" :imgUrl="imgUrl" :readOnly="readOnly" />
+<vue-ele-sign ref="VueEleSign" :color="color" :bgImg="bgImg" :readOnly="readOnly" />
     ...
-import VueElectronicSignature from 'vue-electronic-signature'
-components: { VueElectronicSignature }
+import VueEleSign from 'vue-ele-sign'
+components: { VueEleSign }
     ...
 ```
 
@@ -69,7 +69,7 @@ components: { VueElectronicSignature }
 |bgImg|背景图片|''|
 |readOnly|是否只读|false|
 
-# EleSign对象主要方法说明 
+# 对象主要方法说明 
 |方法名称|描述|参数|返回值|
 |:-|-:|-:|-:|
 |init|初始化方法|无|无|

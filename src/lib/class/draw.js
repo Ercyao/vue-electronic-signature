@@ -10,6 +10,8 @@ import { createObject, merge } from '../untils/untils'
  * @param {中心对象} main
  */
 
+var isFirstOnloadImg = false // 判断是不是第一次加载图片
+
 var obj = createObject('draw', function(cvs, main) {
   this.cvs = cvs //cvs节点
   this.c2d = cvs.getContext('2d') //canvas绘制上下文
@@ -57,30 +59,32 @@ merge(obj.prototype, {
     }
 
     if (this.main.option && this.main.option.bgImg) {
-      let bgImg = this.main.option.bgImg
-      let img = new Image()
-      img.src = bgImg
-
-      this.c2d.drawImage(img, 0, 0, this.cvs.width, this.cvs.height) // 解决闪烁的问题
-
-      let self = this
-      img.onload = function() {
-        self.c2d.drawImage(img, 0, 0, self.cvs.width, self.cvs.height)
-      }
+      this.setDrawImage(this.main.option.bgImg, this.cvs.width, this.cvs.height)
     }
 
     this.c2d.drawImage(this.memCvs, 0, 0, this.cvs.width, this.cvs.height)
   },
   drawImage(url) {
+    this.setDrawImage(url, this.cvs.width, this.cvs.height)
+  },
+
+  setDrawImage(url, width, height) {
     let self = this
     let img = new Image()
-    img.src = url
-    if (!url) {
-      img.onload = function() {
-        self.c2d.drawImage(img, 0, 0, self.cvs.width, self.cvs.height)
+    img.src = url || null
+    img.setAttribute('crossOrigin', 'Anonymous')
+    self.c2d.drawImage(img, 0, 0, width, height)
+
+    if (!isFirstOnloadImg) {
+      // 处理第一次加载问题
+      isFirstOnloadImg = true
+      img.onload = () => {
+        self.c2d.drawImage(img, 0, 0, width, height)
       }
-    } else {
-      self.c2d.drawImage(img, 0, 0, self.cvs.width, self.cvs.height)
+    }
+
+    img.onerror = (err) => {
+      console.error('图片加载失败：', err)
     }
   },
 })

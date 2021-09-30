@@ -120,13 +120,13 @@ merge(obj.prototype, {
     this.draw.draw()
   },
   clear() {
+    this.option.bgImg = ''
+    this.clearSign()
+  },
+  clearSign() {
     this.data.clear()
     this.redoData.clear()
     this.draw.draw()
-  },
-  clearBgImg() {
-    this.option.bgImg = ''
-    this.draw.drawImage()
   },
   destory() {
     this.data.clear()

@@ -30,6 +30,14 @@ export default {
             type: Number,
             default: 10
         },
+        bgImg: {
+            type: String,
+            default: ''
+        },
+        imgType: {
+            type: String,
+            default: 'jpg'
+        },
         imgUrl: {
             type: String,
             default: ''
@@ -41,7 +49,9 @@ export default {
         datas: null
     },
     data() {
-        return {}
+        return {
+            signcodeEx: null
+        }
     },
     mounted() {
         this.signcodeEx = new ElesignCode({
@@ -54,7 +64,7 @@ export default {
         this.signcodeEx.setColor(this.color)
         this.signcodeEx.setLineWidth(this.lineWidth)
         this.signcodeEx.setBgColor(this.bgColor)
-        this.signcodeEx.setBgImg(this.imgUrl)
+        this.signcodeEx.setBgImg(this.bgImg)
         this.signcodeEx.setReadOnly(this.readOnly)
         this.datas && this.signcodeEx.jsonTo(this.datas)
     },
@@ -95,12 +105,44 @@ export default {
         imgTo(url) {
             return this.signcodeEx.imgTo(url)
         },
-
+        setBgImg(url) {
+            return this.signcodeEx.setBgImg(url)
+        },
         clear(pen) {
             return this.signcodeEx.clear(pen)
         },
-        clearBgImg() {
-            return this.signcodeEx.clearBgImg()
+        clearSign(pen) {
+            return this.signcodeEx.clearSign(pen)
+        },
+        getData(filename) {
+            let imgData = this.getImg()
+            let jsonData = this.getJson()
+            return { file: this.base64ImgtoFile(imgData, filename), url: imgData, datas: jsonData }
+        },
+        getImg() {
+            if (this.imgType == 'png') {
+                return this.toPng()
+            }
+            return this.toJpeg()
+        },
+        getFile(filename) {
+            let imgData = this.getImg()
+            return this.base64ImgtoFile(imgData, filename)
+        },
+        // base64转成file文件
+        base64ImgtoFile(dataurl, filename = '签名') {
+            const arr = dataurl.split(',')
+            const mime = arr[0].match(/:(.*?);/)[1]
+            const suffix = mime.split('/')[1]
+            const bstr = atob(arr[1])
+            let n = bstr.length
+            const u8arr = new Uint8Array(n)
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n)
+            }
+            return new File([u8arr], `${filename}.${suffix}`, {
+                type: mime
+            })
         }
     },
     watch: {
@@ -110,8 +152,8 @@ export default {
                 this.datas && this.signcodeEx.jsonTo(this.datas)
             }
         },
-        imgUrl() {
-            this.signcodeEx.imgTo(this.imgUrl)
+        bgImg() {
+            this.signcodeEx.imgTo(this.bgImg)
         },
         '$props.readOnly': {
             deep: true,
